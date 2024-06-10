@@ -18,7 +18,7 @@
 
 </head>
 <body>
-	<form class="m-3">
+	<form class="m-3"  method="GET">
 		<div class="form-group">
 			<label for="Subject">Subject</label> <input type="text"
 				class="form-control" id="Subject"
@@ -46,20 +46,21 @@ $(document).ready(function() {
             body: $('#exampleFormControlTextarea1').val()
         };
 
+        var queryString = $.param(formData);
+
         $.ajax({
-            type: 'POST',
-            url: '/helloworld-web/sendEmail',
-            data: JSON.stringify(formData),
-            contentType: 'application/json',
+            type: 'GET',
+            url: '/demo-web/sendEmail?' + queryString,
             success: function(response) {
-                alert(response);
-            },
+                alert("Success");
+           },
             error: function(xhr, status, error) {
                 alert('Error sending email: ' + error);
             }
         });
     });
 });
+
 </script>
 </body>
 </html>

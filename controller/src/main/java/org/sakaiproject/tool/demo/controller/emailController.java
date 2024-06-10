@@ -46,7 +46,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  * Handles requests for the application home page.
  */
 @Controller
-public class SendEmailController extends BaseController {
+public class emailController extends BaseController {
 
 	/**
 	 * This method is called when binding the HTTP parameter to bean (or model).
@@ -69,11 +69,32 @@ public class SendEmailController extends BaseController {
 	 * @return
 	 */
 
-	@RequestMapping(value = { "email" }, method = RequestMethod.GET)
-	public ModelAndView displayHome(HttpServletRequest request, HttpSession httpSession) {
-		ModelAndView mav = new ModelAndView("email");
 
+	@RequestMapping(value = "sendEmail", method = RequestMethod.GET)
+	public ModelAndView sendEmail(@RequestParam("to") String to, @RequestParam("subject") String subject,
+			@RequestParam("body") String body) {
+		ModelAndView mav = new ModelAndView();
+
+		HtmlEmail email = new HtmlEmail();
+		email.setHostName("smtp.gmail.com");
+		email.setSmtpPort(465);
+		email.setAuthentication("HCMUS", "Capstone2024hcmus@");
+		email.setStartTLSEnabled(true);
+		mav.addObject(body);
+
+		try {
+			email.setFrom("capstonehcmus2024@gmail.com");
+			email.addTo(to);
+			email.setSubject(subject);
+			email.setHtmlMsg(body);
+			email.send();
+
+			mav.addObject("message", "Email sent successfully!");
+		} catch (EmailException e) {
+			mav.addObject("error", "Error occurred while sending email: " + e.getMessage());
+		}
+
+		mav.setViewName("email");
 		return mav;
 	}
-
 }
